@@ -1,16 +1,11 @@
 from fastapi import FastAPI
 
+from app.api.league_routes import router as league_router
+from app.api.team_routes import router as team_router
+
 app = FastAPI(
-    title="SportsIQ AI",
-    version="0.1.0",
-    description="API para análisis y predicción deportiva."
+    title="SportsIQ AI"
 )
 
-@app.get("/")
-def root():
-    return {
-        "name": "SportsIQ AI",
-        "version": "0.1.0",
-        "status": "running",
-        "message": "¡Bienvenido a SportsIQ AI!"
-    }
+app.include_router(league_router)
+app.include_router(team_router)
