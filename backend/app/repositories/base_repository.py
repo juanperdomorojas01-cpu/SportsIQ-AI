@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 ModelType = TypeVar("ModelType")
@@ -54,3 +54,9 @@ class BaseRepository(Generic[ModelType]):
     def scalars(self, stmt):
 
         return self.db.scalars(stmt)
+
+    def count(self) -> int:
+
+        stmt = select(func.count()).select_from(self.model)
+
+        return self.db.scalar(stmt) or 0
