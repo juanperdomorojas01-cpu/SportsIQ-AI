@@ -1,6 +1,6 @@
 import httpx
 
-from app.config import settings
+from app.core.config import settings
 
 
 class APIFootballService:
@@ -77,6 +77,60 @@ class APIFootballService:
             params={
                 "league": league_id,
                 "season": season
+            },
+            timeout=30
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+    # ==========================================================
+    # BOOKMAKERS
+    # ==========================================================
+
+    def get_bookmakers(self):
+
+        response = httpx.get(
+            f"{self.BASE_URL}/odds/bookmakers",
+            headers=self.headers,
+            timeout=30
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+    # ==========================================================
+    # BET TYPES
+    # ==========================================================
+
+    def get_bets(self):
+
+        response = httpx.get(
+            f"{self.BASE_URL}/odds/bets",
+            headers=self.headers,
+            timeout=30
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+    # ==========================================================
+    # ODDS
+    # ==========================================================
+
+    def get_odds(
+        self,
+        fixture_id: int
+    ):
+
+        response = httpx.get(
+            f"{self.BASE_URL}/odds",
+            headers=self.headers,
+            params={
+                "fixture": fixture_id
             },
             timeout=30
         )

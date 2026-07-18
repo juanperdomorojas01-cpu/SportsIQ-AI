@@ -8,11 +8,18 @@ ModelType = TypeVar("ModelType")
 
 class BaseRepository(Generic[ModelType]):
 
-    def __init__(self, db: Session, model: type[ModelType]):
+    def __init__(
+        self,
+        db: Session,
+        model: type[ModelType],
+    ):
         self.db = db
         self.model = model
 
-    def get_by_id(self, entity_id: int) -> ModelType | None:
+    def get_by_id(
+        self,
+        entity_id: int,
+    ) -> ModelType | None:
 
         stmt = (
             select(self.model)
@@ -27,9 +34,16 @@ class BaseRepository(Generic[ModelType]):
 
         return list(self.db.scalars(stmt))
 
-    def add(self, entity: ModelType):
+    def add(
+        self,
+        entity: ModelType,
+    ) -> ModelType:
 
         self.db.add(entity)
+        self.db.commit()
+        self.db.refresh(entity)
+
+        return entity
 
     def commit(self):
 
@@ -39,7 +53,10 @@ class BaseRepository(Generic[ModelType]):
 
         self.db.rollback()
 
-    def refresh(self, entity: ModelType):
+    def refresh(
+        self,
+        entity: ModelType,
+    ):
 
         self.db.refresh(entity)
 

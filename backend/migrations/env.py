@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app.config import settings
+from app.core.config import settings
 from app.db import Base
 import app.models
 
