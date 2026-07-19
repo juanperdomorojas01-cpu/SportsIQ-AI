@@ -1,4 +1,3 @@
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.bookmaker import Bookmaker
@@ -6,30 +5,21 @@ from app.repositories.base_repository import BaseRepository
 
 
 class BookmakerRepository(BaseRepository[Bookmaker]):
+    model = Bookmaker
 
     def __init__(self, db: Session):
-        super().__init__(db, Bookmaker)
+        super().__init__(db)
 
-    def get_by_api_id(
-        self,
-        api_id: int,
-    ) -> Bookmaker | None:
-
-        stmt = (
-            select(Bookmaker)
-            .where(Bookmaker.api_id == api_id)
+    def get_by_api_id(self, api_id: int) -> Bookmaker | None:
+        return (
+            self.db.query(Bookmaker)
+            .filter(Bookmaker.api_id == api_id)
+            .first()
         )
 
-        return self.scalar(stmt)
-
-    def get_by_name(
-        self,
-        name: str,
-    ) -> Bookmaker | None:
-
-        stmt = (
-            select(Bookmaker)
-            .where(Bookmaker.name == name)
+    def get_by_name(self, name: str) -> Bookmaker | None:
+        return (
+            self.db.query(Bookmaker)
+            .filter(Bookmaker.name == name)
+            .first()
         )
-
-        return self.scalar(stmt)

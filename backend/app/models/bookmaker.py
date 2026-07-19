@@ -43,6 +43,12 @@ class Bookmaker(BaseModel):
         back_populates="bookmaker",
     )
 
+    odds = relationship(
+        "Odd",
+        back_populates="bookmaker",
+        cascade="all, delete-orphan",
+    )
+
     def __repr__(self) -> str:
         return (
             f"<Bookmaker("

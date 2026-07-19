@@ -9,9 +9,14 @@ from app.models.base_model import BaseModel
 class BetType(BaseModel):
     __tablename__ = "bet_types"
 
+    api_id: Mapped[int] = mapped_column(
+        unique=True,
+        index=True,
+        nullable=False,
+    )
+
     name: Mapped[str] = mapped_column(
         String(100),
-        unique=True,
         nullable=False,
     )
 
@@ -30,10 +35,17 @@ class BetType(BaseModel):
         back_populates="bet_type",
     )
 
+    odds = relationship(
+        "Odd",
+        back_populates="bet_type",
+        cascade="all, delete-orphan",
+    )
+
     def __repr__(self) -> str:
         return (
             f"<BetType("
             f"id={self.id}, "
+            f"api_id={self.api_id}, "
             f"name='{self.name}'"
             f")>"
         )

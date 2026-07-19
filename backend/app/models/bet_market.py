@@ -1,7 +1,5 @@
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base_model import BaseModel
 
@@ -9,9 +7,15 @@ from app.models.base_model import BaseModel
 class BetMarket(BaseModel):
     __tablename__ = "bet_markets"
 
+    api_id: Mapped[int] = mapped_column(
+        Integer,
+        unique=True,
+        index=True,
+        nullable=False,
+    )
+
     name: Mapped[str] = mapped_column(
         String(100),
-        unique=True,
         nullable=False,
     )
 
@@ -21,6 +25,7 @@ class BetMarket(BaseModel):
     )
 
     is_active: Mapped[bool] = mapped_column(
+        Boolean,
         default=True,
         nullable=False,
     )
@@ -34,6 +39,7 @@ class BetMarket(BaseModel):
         return (
             f"<BetMarket("
             f"id={self.id}, "
+            f"api_id={self.api_id}, "
             f"name='{self.name}'"
             f")>"
         )

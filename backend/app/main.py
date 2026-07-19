@@ -9,9 +9,12 @@ from app.api.fixture_routes import router as fixture_router
 from app.api.league_routes import router as league_router
 from app.api.standing_routes import router as standing_router
 from app.api.team_routes import router as team_router
+from app.api.player_routes import router as player_router
 from app.api.bookmaker_routes import router as bookmaker_router
 from app.api.bankroll_routes import router as bankroll_router
 from app.api.bet_routes import router as bet_router
+from app.api.bet_type_routes import router as bet_type_router
+from app.api.odds_routes import router as odds_router
 
 from app.db.database import SessionLocal
 from app.db.seeds import seed_roles
@@ -61,6 +64,7 @@ app.include_router(dashboard_router)
 # ==========================
 app.include_router(league_router)
 app.include_router(team_router)
+app.include_router(player_router)
 app.include_router(fixture_router)
 app.include_router(standing_router)
 
@@ -68,9 +72,20 @@ app.include_router(standing_router)
 # Betting Data
 # ==========================
 app.include_router(bookmaker_router)
+app.include_router(bet_type_router)
+app.include_router(odds_router)
 
 # ==========================
 # Bankroll
 # ==========================
 app.include_router(bankroll_router)
 app.include_router(bet_router)
+
+
+@app.get("/")
+def root():
+    return {
+        "application": "SportsIQ AI",
+        "version": "1.0.0",
+        "status": "running",
+    }

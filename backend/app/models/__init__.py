@@ -5,7 +5,11 @@ from .bet_type import BetType
 from .bookmaker import Bookmaker
 from .fixture import Fixture
 from .league import League
+from .odd import Odd
+from .odd_value import OddValue
 from .role import Role
 from .team import Team
 from .transaction import Transaction
 from .user import User
+from app.models.player import Player
+from app.models.player_statistic import PlayerStatistic

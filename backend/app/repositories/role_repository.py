@@ -1,12 +1,14 @@
 from sqlalchemy.orm import Session
 
 from app.models.role import Role
+from app.repositories.base_repository import BaseRepository
 
 
-class RoleRepository:
+class RoleRepository(BaseRepository[Role]):
+    model = Role
 
     def __init__(self, db: Session):
-        self.db = db
+        super().__init__(db)
 
     def get_by_id(self, role_id: int) -> Role | None:
         return (
@@ -34,3 +36,12 @@ class RoleRepository:
         self.db.commit()
         self.db.refresh(role)
         return role
+
+    def update(self, role: Role) -> Role:
+        self.db.commit()
+        self.db.refresh(role)
+        return role
+
+    def delete(self, role: Role) -> None:
+        self.db.delete(role)
+        self.db.commit()

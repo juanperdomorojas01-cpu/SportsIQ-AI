@@ -1,7 +1,9 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
@@ -13,47 +15,53 @@ class Fixture(Base):
 
     api_id: Mapped[int] = mapped_column(
         unique=True,
-        index=True
+        index=True,
     )
 
     referee: Mapped[str | None] = mapped_column(
         String(150),
-        nullable=True
+        nullable=True,
     )
 
     timezone: Mapped[str] = mapped_column(
-        String(50)
+        String(50),
     )
 
     date: Mapped[datetime] = mapped_column(
-        DateTime
+        DateTime,
     )
 
     timestamp: Mapped[int]
 
     status: Mapped[str] = mapped_column(
-        String(30)
+        String(30),
     )
 
     league_id: Mapped[int] = mapped_column(
         ForeignKey("leagues.id"),
-        nullable=False
+        nullable=False,
     )
 
     home_team_id: Mapped[int] = mapped_column(
         ForeignKey("teams.id"),
-        nullable=False
+        nullable=False,
     )
 
     away_team_id: Mapped[int] = mapped_column(
         ForeignKey("teams.id"),
-        nullable=False
+        nullable=False,
     )
 
     home_goals: Mapped[int | None] = mapped_column(
-        nullable=True
+        nullable=True,
     )
 
     away_goals: Mapped[int | None] = mapped_column(
-        nullable=True
+        nullable=True,
+    )
+
+    odds = relationship(
+        "Odd",
+        back_populates="fixture",
+        cascade="all, delete-orphan",
     )

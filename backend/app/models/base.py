@@ -1,12 +1,9 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
-
-class Base(DeclarativeBase):
-    """Clase base para todos los modelos ORM."""
-    pass
+from app.db.base import Base
 
 
 class BaseModel(Base):

@@ -1,6 +1,5 @@
-from typing import Generic, TypeVar
+from typing import Generic, Type, TypeVar
 
-from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 ModelType = TypeVar("ModelType")
@@ -8,72 +7,67 @@ ModelType = TypeVar("ModelType")
 
 class BaseRepository(Generic[ModelType]):
 
-    def __init__(
-        self,
-        db: Session,
-        model: type[ModelType],
-    ):
+    model: Type[ModelType]
+
+    def __init__(self, db: Session):
         self.db = db
-        self.model = model
 
-    def get_by_id(
-        self,
-        entity_id: int,
-    ) -> ModelType | None:
+    # ==================================================
+    # Queries
+    # ==================================================
 
-        stmt = (
-            select(self.model)
-            .where(self.model.id == entity_id)
+    def get(self, entity_id: int) -> ModelType | None:
+        return (
+            self.db.query(self.model)
+            .filter(self.model.id == entity_id)
+            .first()
         )
 
-        return self.db.scalar(stmt)
+    def get_by_api_id(self, api_id: int) -> ModelType | None:
+        return (
+            self.db.query(self.model)
+            .filter(self.model.api_id == api_id)
+            .first()
+        )
 
     def get_all(self) -> list[ModelType]:
+        return (
+            self.db.query(self.model)
+            .all()
+        )
 
-        stmt = select(self.model)
+    def count(self) -> int:
+        return (
+            self.db.query(self.model)
+            .count()
+        )
 
-        return list(self.db.scalars(stmt))
+    # ==================================================
+    # Persistence
+    # ==================================================
 
-    def add(
-        self,
-        entity: ModelType,
-    ) -> ModelType:
+    def add(self, entity: ModelType) -> ModelType:
+        self.db.add(entity)
+        return entity
 
+    def add_and_commit(self, entity: ModelType) -> ModelType:
         self.db.add(entity)
         self.db.commit()
         self.db.refresh(entity)
-
         return entity
 
     def commit(self):
-
         self.db.commit()
 
     def rollback(self):
-
         self.db.rollback()
 
-    def refresh(
-        self,
-        entity: ModelType,
-    ):
-
+    def refresh(self, entity: ModelType):
         self.db.refresh(entity)
 
-    def flush(self):
+    def delete(self, entity: ModelType):
+        self.db.delete(entity)
 
-        self.db.flush()
-
-    def scalar(self, stmt):
-
-        return self.db.scalar(stmt)
-
-    def scalars(self, stmt):
-
-        return self.db.scalars(stmt)
-
-    def count(self) -> int:
-
-        stmt = select(func.count()).select_from(self.model)
-
-        return self.db.scalar(stmt) or 0
+    def delete_and_commit(self, entity: ModelType):
+        self.db.delete(entity)
+        self.db.commit()

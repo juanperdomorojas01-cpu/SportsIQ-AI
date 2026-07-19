@@ -1,12 +1,14 @@
 from sqlalchemy.orm import Session
 
 from app.models.user import User
+from app.repositories.base_repository import BaseRepository
 
 
-class UserRepository:
+class UserRepository(BaseRepository[User]):
+    model = User
 
     def __init__(self, db: Session):
-        self.db = db
+        super().__init__(db)
 
     def get_by_id(self, user_id: int) -> User | None:
         return (

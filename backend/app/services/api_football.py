@@ -4,137 +4,131 @@ from app.core.config import settings
 
 
 class APIFootballService:
-
     BASE_URL = "https://v3.football.api-sports.io"
 
     def __init__(self):
-
         self.headers = {
             "x-apisports-key": settings.API_FOOTBALL_KEY
         }
 
+    def _get(self, endpoint: str, params: dict | None = None):
+        response = httpx.get(
+            f"{self.BASE_URL}{endpoint}",
+            headers=self.headers,
+            params=params,
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+    # ==========================
+    # LEAGUES
+    # ==========================
+
     def get_leagues(self):
+        return self._get("/leagues")
 
-        response = httpx.get(
-            f"{self.BASE_URL}/leagues",
-            headers=self.headers,
-            timeout=30
-        )
+    # ==========================
+    # TEAMS
+    # ==========================
 
-        response.raise_for_status()
-
-        return response.json()
-
-    def get_teams(
-        self,
-        league_id: int,
-        season: int
-    ):
-
-        response = httpx.get(
-            f"{self.BASE_URL}/teams",
-            headers=self.headers,
-            params={
+    def get_teams(self, league_id: int, season: int):
+        return self._get(
+            "/teams",
+            {
                 "league": league_id,
-                "season": season
+                "season": season,
             },
-            timeout=30
         )
 
-        response.raise_for_status()
+    # ==========================
+    # PLAYERS
+    # ==========================
 
-        return response.json()
+    def get_players(self, team_id: int, season: int):
+        return self._get(
+            "/players",
+            {
+                "team": team_id,
+                "season": season,
+            },
+        )
 
-    def get_fixtures(
-        self,
-        league_id: int,
-        season: int
-    ):
+    def get_player(self, player_id: int, season: int):
+        return self._get(
+            "/players",
+            {
+                "id": player_id,
+                "season": season,
+            },
+        )
 
-        response = httpx.get(
-            f"{self.BASE_URL}/fixtures",
-            headers=self.headers,
-            params={
+    # ==========================
+    # FIXTURES
+    # ==========================
+
+    def get_fixtures(self, league_id: int, season: int):
+        return self._get(
+            "/fixtures",
+            {
                 "league": league_id,
-                "season": season
+                "season": season,
             },
-            timeout=30
         )
 
-        response.raise_for_status()
+    def get_fixture(self, fixture_id: int):
+        return self._get(
+            "/fixtures",
+            {
+                "id": fixture_id,
+            },
+        )
 
-        return response.json()
+    def get_fixtures_by_date(self, date: str):
+        return self._get(
+            "/fixtures",
+            {
+                "date": date,
+            },
+        )
 
-    def get_standings(
-        self,
-        league_id: int,
-        season: int
-    ):
+    # ==========================
+    # STANDINGS
+    # ==========================
 
-        response = httpx.get(
-            f"{self.BASE_URL}/standings",
-            headers=self.headers,
-            params={
+    def get_standings(self, league_id: int, season: int):
+        return self._get(
+            "/standings",
+            {
                 "league": league_id,
-                "season": season
+                "season": season,
             },
-            timeout=30
         )
 
-        response.raise_for_status()
-
-        return response.json()
-
-    # ==========================================================
-    # BOOKMAKERS
-    # ==========================================================
+    # ==========================
+    # ODDS
+    # ==========================
 
     def get_bookmakers(self):
-
-        response = httpx.get(
-            f"{self.BASE_URL}/odds/bookmakers",
-            headers=self.headers,
-            timeout=30
-        )
-
-        response.raise_for_status()
-
-        return response.json()
-
-    # ==========================================================
-    # BET TYPES
-    # ==========================================================
+        return self._get("/odds/bookmakers")
 
     def get_bets(self):
+        return self._get("/odds/bets")
 
-        response = httpx.get(
-            f"{self.BASE_URL}/odds/bets",
-            headers=self.headers,
-            timeout=30
-        )
-
-        response.raise_for_status()
-
-        return response.json()
-
-    # ==========================================================
-    # ODDS
-    # ==========================================================
-
-    def get_odds(
-        self,
-        fixture_id: int
-    ):
-
-        response = httpx.get(
-            f"{self.BASE_URL}/odds",
-            headers=self.headers,
-            params={
-                "fixture": fixture_id
+    def get_odds(self, fixture_id: int):
+        return self._get(
+            "/odds",
+            {
+                "fixture": fixture_id,
             },
-            timeout=30
         )
 
-        response.raise_for_status()
-
-        return response.json()
+    def get_odds_by_date(self, date: str):
+        return self._get(
+            "/odds",
+            {
+                "date": date,
+            },
+        )

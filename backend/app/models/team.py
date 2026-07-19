@@ -39,3 +39,9 @@ class Team(Base):
     league: Mapped["League"] = relationship(
         back_populates="teams"
     )
+
+    players = relationship(
+    "Player",
+    back_populates="team",
+    cascade="all, delete-orphan",
+)

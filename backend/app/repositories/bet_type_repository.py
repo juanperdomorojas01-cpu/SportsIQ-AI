@@ -1,16 +1,26 @@
 from sqlalchemy.orm import Session
 
 from app.models.bet_type import BetType
+from app.repositories.base_repository import BaseRepository
 
 
-class BetTypeRepository:
+class BetTypeRepository(BaseRepository[BetType]):
+    model = BetType
+
     def __init__(self, db: Session):
-        self.db = db
+        super().__init__(db)
 
-    def get_by_id(self, bet_type_id: int) -> BetType | None:
+    def get_by_api_id(self, api_id: int) -> BetType | None:
         return (
             self.db.query(BetType)
-            .filter(BetType.id == bet_type_id)
+            .filter(BetType.api_id == api_id)
+            .first()
+        )
+
+    def get_by_name(self, name: str) -> BetType | None:
+        return (
+            self.db.query(BetType)
+            .filter(BetType.name == name)
             .first()
         )
 
@@ -21,8 +31,5 @@ class BetTypeRepository:
             .all()
         )
 
-    def create(self, bet_type: BetType) -> BetType:
-        self.db.add(bet_type)
-        self.db.flush()
-        self.db.refresh(bet_type)
-        return bet_type
+    def count(self) -> int:
+        return self.db.query(BetType).count()

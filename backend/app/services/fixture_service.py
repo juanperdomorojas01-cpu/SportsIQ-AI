@@ -18,7 +18,11 @@ class FixtureService:
         self.team_repository = TeamRepository(db)
         self.api = APIFootballService()
 
-    def sync_fixtures(self, league_id: int, season: int):
+    def sync_fixtures(
+        self,
+        league_id: int,
+        season: int
+    ):
 
         data = self.api.get_fixtures(
             league_id,
@@ -67,7 +71,10 @@ class FixtureService:
                     referee=fixture_data["referee"],
                     timezone=fixture_data["timezone"],
                     date=datetime.fromisoformat(
-                        fixture_data["date"].replace("Z", "+00:00")
+                        fixture_data["date"].replace(
+                            "Z",
+                            "+00:00"
+                        )
                     ),
                     timestamp=fixture_data["timestamp"],
                     status=fixture_data["status"]["short"],
@@ -75,7 +82,7 @@ class FixtureService:
                     home_team_id=home_team.id,
                     away_team_id=away_team.id,
                     home_goals=goals_data["home"],
-                    away_goals=goals_data["away"]
+                    away_goals=goals_data["away"],
                 )
 
                 self.repository.add(fixture)
